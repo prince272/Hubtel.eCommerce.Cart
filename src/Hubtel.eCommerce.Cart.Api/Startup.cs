@@ -113,6 +113,9 @@ namespace Hubtel.eCommerce.Cart.Api
 
                 app.UseSwagger();
                 app.UseSwaggerUI();
+
+                app.UseSeeding()
+                   .RunSynchronous();
             }
 
             app.UseHttpsRedirection();

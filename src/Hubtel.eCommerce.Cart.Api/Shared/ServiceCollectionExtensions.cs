@@ -1,9 +1,13 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Hubtel.eCommerce.Cart.Infrastructure.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
 using System.IO;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Hubtel.eCommerce.Cart.Api.Shared
 {
@@ -59,6 +63,24 @@ namespace Hubtel.eCommerce.Cart.Api.Shared
                 if (File.Exists(xmlFilePath)) options.IncludeXmlComments(xmlFilePath);
             });
             return services;
+        }
+
+        public static async Task UseSeeding(this IApplicationBuilder app)
+        {
+            if (app == null) throw new ArgumentNullException(nameof(app));
+
+            using var scope = app.ApplicationServices.CreateScope();
+            var services = scope.ServiceProvider;
+
+            try
+            {
+                await AppDbInitializer.InitializeAsync(services);
+            }
+            catch (Exception ex)
+            {
+                var logger = services.GetRequiredService<ILogger<Program>>();
+                logger.LogError(ex, "An error occurred while seeding the database.");
+            }
         }
     }
 }
