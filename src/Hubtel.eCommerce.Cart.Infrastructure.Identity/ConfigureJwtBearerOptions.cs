@@ -51,7 +51,7 @@ namespace Hubtel.eCommerce.Cart.Infrastructure.Identity
                 OnTokenValidated = async context =>
                 {
                     var userRepository = context.HttpContext.RequestServices.GetRequiredService<IUserRepository>();
-                    var userSessionContext = context.HttpContext.RequestServices.GetRequiredService<IUserSessionContext>();
+                    var userSessionContext = context.HttpContext.RequestServices.GetRequiredService<IUserContext>();
 
                     var claimsPrincipal = context.Principal;
 

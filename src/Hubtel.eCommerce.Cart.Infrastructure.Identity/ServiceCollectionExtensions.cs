@@ -51,7 +51,7 @@ namespace Hubtel.eCommerce.Cart.Infrastructure.Identity
             builder.Services.AddScoped<IUserClaimsPrincipalFactory<User>, UserClaimsPrincipalFactory>();
             builder.Services.AddScoped<IUserSessionFactory, UserSessionFactory>();
             builder.Services.AddScoped<IUserSessionStore, UserSessionStore>();
-            builder.Services.AddScoped<IUserSessionContext, UserSessionContext>();
+            builder.Services.AddScoped<IUserContext, UserSessionContext>();
 
             builder.Services.ConfigureOptions<ConfigureJwtBearerOptions>();
             return builder.AddJwtBearer();

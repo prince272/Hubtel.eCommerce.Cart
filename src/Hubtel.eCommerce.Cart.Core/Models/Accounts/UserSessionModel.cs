@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Hubtel.eCommerce.Cart.Core.Entities;
 using Hubtel.eCommerce.Cart.Core.Extensions.Identity;
 
-namespace NextSolution.Core.Models.Accounts
+namespace Hubtel.eCommerce.Cart.Core.Models.Accounts
 {
     public class UserSessionModel
     {

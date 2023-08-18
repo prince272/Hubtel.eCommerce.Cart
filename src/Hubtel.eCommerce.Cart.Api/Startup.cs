@@ -86,6 +86,8 @@ namespace Hubtel.eCommerce.Cart.Api
 
             services.AddAutoMapper(assemblies);
 
+            services.AddApplication(assemblies);
+
             services.AddControllers(options =>
             {
                 // ASP.NET Core 2.2 Parameter Transformers for clean URL generation and slugs in Razor Pages or MVC
@@ -123,10 +125,6 @@ namespace Hubtel.eCommerce.Cart.Api
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-
                 endpoints.MapControllers();
             });
         }

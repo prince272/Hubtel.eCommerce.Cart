@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Hubtel.eCommerce.Cart.Core.Extensions.Identity
 {
-    public interface IUserSessionContext
+    public interface IUserContext
     {
         string DeviceId { get; }
 

@@ -27,7 +27,7 @@ namespace Hubtel.eCommerce.Cart.Infrastructure.Identity
         private readonly JwtBearerOptions _jwtBearerOptions;
         private readonly IOptions<UserSessionOptions> _userSessionOptions;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IUserSessionContext _userSessionContext;
+        private readonly IUserContext _userSessionContext;
         private readonly IUserClaimsPrincipalFactory<User> _userClaimsPrincipalFactory;
         private readonly ILogger<UserSessionFactory> _logger;
 
@@ -35,7 +35,7 @@ namespace Hubtel.eCommerce.Cart.Infrastructure.Identity
             IOptionsSnapshot<JwtBearerOptions> jwtBearerOptions,
             IOptions<UserSessionOptions> userSessionOptions,
             IHttpContextAccessor httpContextAccessor,
-            IUserSessionContext userSessionContext,
+            IUserContext userSessionContext,
             IUserClaimsPrincipalFactory<User> userClaimsPrincipalFactory, ILogger<UserSessionFactory> logger)
         {
             _jwtBearerOptions = jwtBearerOptions.Get(JwtBearerDefaults.AuthenticationScheme) ?? throw new ArgumentNullException(nameof(jwtBearerOptions));

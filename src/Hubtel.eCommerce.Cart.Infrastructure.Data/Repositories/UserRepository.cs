@@ -85,6 +85,14 @@ namespace Hubtel.eCommerce.Cart.Infrastructure.Data.Repositories
             return _userManager.Users.FirstOrDefaultAsync(_ => _.PhoneNumber == phoneNumber);
         }
 
+        public Task<bool> IsInRoleAsync(User user, string role)
+        {
+            if (user == null) throw new ArgumentNullException(nameof(user));
+            if (role == null) throw new ArgumentNullException(nameof(role));
+
+            return _userManager.IsInRoleAsync(user, role);
+        }
+
         public async Task AddToRoleAsync(User user, string role)
         {
             if (user == null) throw new ArgumentNullException(nameof(user));
@@ -329,6 +337,11 @@ namespace Hubtel.eCommerce.Cart.Infrastructure.Data.Repositories
             }
 
             return null;
+        }
+
+        public Task<User> GetUser(ClaimsPrincipal principal)
+        {
+            return _userManager.GetUserAsync(principal);
         }
 
         public string GetDeviceId(ClaimsPrincipal principal)

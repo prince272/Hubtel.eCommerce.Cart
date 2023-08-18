@@ -6,7 +6,9 @@ namespace Hubtel.eCommerce.Cart.Core.Constants
 {
     public static class Roles
     {
-        public static string Administrator = nameof(Administrator);
+        public static IEnumerable<string> All => new[] { Admin, Member };
+
+        public static string Admin = nameof(Admin);
 
         public static string Member = nameof(Member);
     }

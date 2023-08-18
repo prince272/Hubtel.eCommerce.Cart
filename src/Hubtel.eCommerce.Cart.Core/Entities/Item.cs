@@ -5,21 +5,13 @@ using System.Text;
 
 namespace Hubtel.eCommerce.Cart.Core.Entities
 {
-    public class Cart : IEntity
+    public class Item : IEntity
     {
         public long Id { get; set; }
 
-        public virtual User User { get; set; }
+        public string Name { get; set; }
 
-        public long UserId { get; set; }    
-
-        public Item Item { get; set; }
-
-        public long ItemId { get; set; }
-
-        public string ItemName { get; set; }
-
-        public int Quantity { get; set; }
+        public decimal Price { get; set; }
 
         public DateTimeOffset CreatedAt { get; set; }
 

@@ -19,6 +19,8 @@ namespace Hubtel.eCommerce.Cart.Core.Repositories
 
         Task<User> FindByPhoneNumberAsync(string phoneNumber);
 
+        Task<bool> IsInRoleAsync(User user, string role);
+
         Task AddToRoleAsync(User user, string role);
 
         Task AddToRolesAsync(User user, IEnumerable<string> roles);
@@ -79,6 +81,8 @@ namespace Hubtel.eCommerce.Cart.Core.Repositories
         Task<bool> ValidateRefreshTokenAsync(string refreshToken);
 
         string GetDeviceId(ClaimsPrincipal principal);
+
+        Task<User> GetUser(ClaimsPrincipal principal);
 
         long? GetUserId(ClaimsPrincipal principal);
 

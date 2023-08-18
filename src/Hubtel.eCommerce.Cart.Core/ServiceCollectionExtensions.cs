@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Hubtel.eCommerce.Cart.Core.Entities;
 using Hubtel.eCommerce.Cart.Core.Extensions.Identity;
+using Hubtel.eCommerce.Cart.Core.Shared;
 using Hubtel.eCommerce.Cart.Core.Utilities;
 using Humanizer;
 using Microsoft.AspNetCore.Identity;
@@ -15,6 +16,18 @@ namespace Hubtel.eCommerce.Cart.Core
 {
     public static class ServiceCollectionExtensions
     {
+        public static IServiceCollection AddApplication(this IServiceCollection services, IEnumerable<Assembly> assemblies)
+        {
+            var serviceTypes = assemblies.SelectMany(_ => _.DefinedTypes).Select(_ => _.AsType()).Where(type => type.IsClass && !type.IsAbstract && !type.IsGenericType && type.IsCompatibleWith(typeof(IService)));
+
+            foreach (var concreteType in serviceTypes)
+            {
+                services.AddScoped(concreteType);
+            }
+
+            return services;
+        }
+
         public static IServiceCollection AddValidators(this IServiceCollection services, IEnumerable<Assembly> assemblies)
         {
             ValidatorOptions.Global.DefaultClassLevelCascadeMode = CascadeMode.Continue;

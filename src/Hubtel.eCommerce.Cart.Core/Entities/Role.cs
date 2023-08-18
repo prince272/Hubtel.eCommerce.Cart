@@ -8,6 +8,14 @@ namespace Hubtel.eCommerce.Cart.Core.Entities
 {
     public class Role : IdentityRole<long>, IEntity
     {
+        public Role()
+        {
+        }
+
+        public Role(string roleName) : base(roleName)
+        {
+        }
+
         public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
     }
 }

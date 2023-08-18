@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Hubtel.eCommerce.Cart.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]/[action]")]
+    [Route("/[controller]/[action]")]
     public class AccountsController : ControllerBase
     {
         private readonly AccountService _accountService;

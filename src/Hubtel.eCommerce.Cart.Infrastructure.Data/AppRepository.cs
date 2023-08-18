@@ -56,13 +56,13 @@ namespace Hubtel.eCommerce.Cart.Infrastructure.Data
             return GetQueryable(predicate, orderBy, include, enableTracking: true, enableFilters: true).FirstOrDefaultAsync();
         }
 
-        public Task<TResult> FindAsync<TResult>(
-            Expression<Func<TEntity, TResult>> selector,
+        public async Task<TResult> FindAsync<TResult>(
+            Func<TEntity, TResult> selector,
             Expression<Func<TEntity, bool>> predicate,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             params Expression<Func<TEntity, object>>[] include)
         {
-            return GetQueryable(predicate, orderBy, include, enableTracking: true, enableFilters: true).Select(selector).FirstOrDefaultAsync();
+            return (await GetQueryable(predicate, orderBy, include, enableTracking: true, enableFilters: true).Take(1).ToListAsync()).Select(selector).FirstOrDefault();
         }
 
         public async Task<IEnumerable<TEntity>> FindManyAsync(
@@ -74,12 +74,12 @@ namespace Hubtel.eCommerce.Cart.Infrastructure.Data
         }
 
         public async Task<IEnumerable<TResult>> FindManyAsync<TResult>(
-            Expression<Func<TEntity, TResult>> selector,
+            Func<TEntity, TResult> selector,
             Expression<Func<TEntity, bool>> predicate,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             params Expression<Func<TEntity, object>>[] include)
         {
-            return await GetQueryable(predicate, orderBy, include, enableTracking: true, enableFilters: true).Select(selector).ToArrayAsync();
+            return (await GetQueryable(predicate, orderBy, include, enableTracking: true, enableFilters: true).Take(1).ToListAsync()).Select(selector);
         }
 
         public async Task<IPageable<TEntity>> FindManyAsync(int pageNumber, int pageSize,
@@ -91,12 +91,12 @@ namespace Hubtel.eCommerce.Cart.Infrastructure.Data
         }
 
         public async Task<IPageable<TResult>> FindManyAsync<TResult>(int pageNumber, int pageSize,
-            Expression<Func<TEntity, TResult>> selector,
+            Func<TEntity, TResult> selector,
             Expression<Func<TEntity, bool>> predicate = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             params Expression<Func<TEntity, object>>[] include)
         {
-            return await GetQueryable(predicate, orderBy, include, enableTracking: false, enableFilters: true).Select(selector).PaginateAsync(pageNumber, pageSize);
+            return await GetQueryable(predicate, orderBy, include, enableTracking: false, enableFilters: true).PaginateAsync(pageNumber, pageSize, selector);
         }
 
         public IQueryable<TEntity> GetQueryable(

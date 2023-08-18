@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Hubtel.eCommerce.Cart.Infrastructure.Identity
 {
-    public class UserSessionContext : IUserSessionContext
+    public class UserSessionContext : IUserContext
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
 
