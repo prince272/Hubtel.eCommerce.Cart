@@ -19,7 +19,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 using System.Threading.Tasks;
+using Hubtel.eCommerce.Cart.Api.Controllers;
 
 namespace Hubtel.eCommerce.Cart.Api
 {
@@ -88,15 +91,35 @@ namespace Hubtel.eCommerce.Cart.Api
 
             services.AddApplication(assemblies);
 
+
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
+
             services.AddControllers(options =>
             {
                 // ASP.NET Core 2.2 Parameter Transformers for clean URL generation and slugs in Razor Pages or MVC
                 // source: https://www.hanselman.com/blog/ASPNETCore22ParameterTransformersForCleanURLGenerationAndSlugsInRazorPagesOrMVC.aspx
                 options.Conventions.Add(new RouteTokenTransformerConvention(new SlugifyParameterTransformer()));
 
+                // Form field is required even if not defined so
+                // source: https://stackoverflow.com/questions/72060349/form-field-is-required-even-if-not-defined-so
+                options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
+            })
+                .AddSessionStateTempDataProvider()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+                    options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+
+                    options.JsonSerializerOptions.IgnoreNullValues = true;
             });
 
-            services.AddAuthentication()
+            services.AddTransient<ProblemDetailsFactory, HttpProblemDetailsFactory>();
+          
                     .AddBearer(Configuration.GetSection("Authentication:Bearer"));
 
             services.AddAuthorization();
@@ -107,6 +130,10 @@ namespace Hubtel.eCommerce.Cart.Api
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             // Configure the HTTP request pipeline.
+
+            app.UseStatusCodePagesWithReExecute("/errors/{0}");
+            app.UseExceptionHandler("/errors/500");
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
