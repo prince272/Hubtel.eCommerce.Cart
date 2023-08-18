@@ -33,6 +33,8 @@ namespace Hubtel.eCommerce.Cart.Api
                 options.UseSqlServer(connectionString, sqlOptions => sqlOptions.MigrationsAssembly(typeof(AppDbContext).Assembly.GetName().Name));
             });
 
+            services.AddRepositories();
+
             services.AddControllers();
         }
 
