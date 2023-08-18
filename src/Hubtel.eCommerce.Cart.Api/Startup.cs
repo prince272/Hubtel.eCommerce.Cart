@@ -1,3 +1,4 @@
+using Hubtel.eCommerce.Cart.Api.Shared;
 using Hubtel.eCommerce.Cart.Core.Entities;
 using Hubtel.eCommerce.Cart.Infrastructure.Data;
 using Hubtel.eCommerce.Cart.Infrastructure.Identity;
@@ -81,14 +82,20 @@ namespace Hubtel.eCommerce.Cart.Api
 
             services.AddAuthentication()
                     .AddBearer(Configuration.GetSection("Authentication:Bearer"));
+
+            services.AddDocumentations();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            // Configure the HTTP request pipeline.
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
 
             app.UseHttpsRedirection();
