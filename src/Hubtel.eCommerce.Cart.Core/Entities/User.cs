@@ -12,6 +12,10 @@ namespace Hubtel.eCommerce.Cart.Core.Entities
 
         public string LastName { get; set; }
 
+        public bool Active { get; set; }
+
+        public DateTimeOffset ActiveAt { get; set; }
+
         public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
     }
 

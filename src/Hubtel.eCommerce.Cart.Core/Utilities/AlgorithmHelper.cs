@@ -1,5 +1,7 @@
-﻿using System;
+﻿using DeviceId;
+using System;
 using System.Globalization;
+using System.IO;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
@@ -10,6 +12,8 @@ namespace Hubtel.eCommerce.Cart.Core.Utilities
 {
     public static class AlgorithmHelper
     {
+        public static string SecretKey => GenerateHash(new DeviceIdBuilder().AddMachineName().AddOsVersion().AddUserName().AddFileToken(Path.ChangeExtension(Assembly.GetEntryAssembly()!.Location, nameof(SecretKey).ToLower())).ToString());
+
         public static async Task<string> GenerateSlugAsync(string text, Func<string, Task<bool>> exists, string separator = "-")
         {
             if (text == null)
@@ -72,7 +76,7 @@ namespace Hubtel.eCommerce.Cart.Core.Utilities
             return input;
         }
 
-        public static string GenerateSHA256Hash(string input)
+        public static string GenerateHash(string input)
         {
             using (SHA256 sha256 = SHA256.Create())
             {

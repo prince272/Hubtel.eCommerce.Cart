@@ -7,6 +7,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Hubtel.eCommerce.Cart.Core\Hubtel.eCommerce.Cart.Core.csproj" />
     <ProjectReference Include="..\Hubtel.eCommerce.Cart.Infrastructure.Data\Hubtel.eCommerce.Cart.Infrastructure.Data.csproj" />
+    <ProjectReference Include="..\Hubtel.eCommerce.Cart.Infrastructure.Identity\Hubtel.eCommerce.Cart.Infrastructure.Identity.csproj" />
     <ProjectReference Include="..\Hubtel.eCommerce.Cart.Infrastructure\Hubtel.eCommerce.Cart.Infrastructure.csproj" />
   </ItemGroup>
 

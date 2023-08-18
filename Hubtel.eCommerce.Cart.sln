@@ -5,13 +5,15 @@ VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{39C5E58D-5668-4C2C-B9CE-2452DC419C35}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hubtel.eCommerce.Cart.Core", "src\Hubtel.eCommerce.Cart.Core\Hubtel.eCommerce.Cart.Core.csproj", "{E9E12AFC-B419-4A1D-94E1-852C072AAC4B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hubtel.eCommerce.Cart.Core", "src\Hubtel.eCommerce.Cart.Core\Hubtel.eCommerce.Cart.Core.csproj", "{E9E12AFC-B419-4A1D-94E1-852C072AAC4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hubtel.eCommerce.Cart.Infrastructure", "src\Hubtel.eCommerce.Cart.Infrastructure\Hubtel.eCommerce.Cart.Infrastructure.csproj", "{9CF8716D-67C8-4DA6-8036-9CEBF93A9F38}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hubtel.eCommerce.Cart.Infrastructure", "src\Hubtel.eCommerce.Cart.Infrastructure\Hubtel.eCommerce.Cart.Infrastructure.csproj", "{9CF8716D-67C8-4DA6-8036-9CEBF93A9F38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hubtel.eCommerce.Cart.Infrastructure.Data", "src\Hubtel.eCommerce.Cart.Infrastructure.Data\Hubtel.eCommerce.Cart.Infrastructure.Data.csproj", "{728CC826-C8BF-4602-9B60-48E9FC08616C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hubtel.eCommerce.Cart.Infrastructure.Data", "src\Hubtel.eCommerce.Cart.Infrastructure.Data\Hubtel.eCommerce.Cart.Infrastructure.Data.csproj", "{728CC826-C8BF-4602-9B60-48E9FC08616C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hubtel.eCommerce.Cart.Api", "src\Hubtel.eCommerce.Cart.Api\Hubtel.eCommerce.Cart.Api.csproj", "{421B5647-FE73-4C9A-AB12-535CC67EA26E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hubtel.eCommerce.Cart.Api", "src\Hubtel.eCommerce.Cart.Api\Hubtel.eCommerce.Cart.Api.csproj", "{421B5647-FE73-4C9A-AB12-535CC67EA26E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hubtel.eCommerce.Cart.Infrastructure.Identity", "src\Hubtel.eCommerce.Cart.Infrastructure.Identity\Hubtel.eCommerce.Cart.Infrastructure.Identity.csproj", "{81D83C53-1968-47A4-A69E-FBA6F0AA7C05}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +37,10 @@ Global
 		{421B5647-FE73-4C9A-AB12-535CC67EA26E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{421B5647-FE73-4C9A-AB12-535CC67EA26E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{421B5647-FE73-4C9A-AB12-535CC67EA26E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81D83C53-1968-47A4-A69E-FBA6F0AA7C05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81D83C53-1968-47A4-A69E-FBA6F0AA7C05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81D83C53-1968-47A4-A69E-FBA6F0AA7C05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81D83C53-1968-47A4-A69E-FBA6F0AA7C05}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -44,6 +50,7 @@ Global
 		{9CF8716D-67C8-4DA6-8036-9CEBF93A9F38} = {39C5E58D-5668-4C2C-B9CE-2452DC419C35}
 		{728CC826-C8BF-4602-9B60-48E9FC08616C} = {39C5E58D-5668-4C2C-B9CE-2452DC419C35}
 		{421B5647-FE73-4C9A-AB12-535CC67EA26E} = {39C5E58D-5668-4C2C-B9CE-2452DC419C35}
+		{81D83C53-1968-47A4-A69E-FBA6F0AA7C05} = {39C5E58D-5668-4C2C-B9CE-2452DC419C35}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1BEA81F4-92A3-406D-B883-49252FCEEC16}
