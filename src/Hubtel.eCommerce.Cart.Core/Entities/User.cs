@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Hubtel.eCommerce.Cart.Core.Entities
 {
@@ -17,6 +18,11 @@ namespace Hubtel.eCommerce.Cart.Core.Entities
         public DateTimeOffset ActiveAt { get; set; }
 
         public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+
+        public static implicit operator Task<object>(User v)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class UserRole : IdentityUserRole<long>, IEntity

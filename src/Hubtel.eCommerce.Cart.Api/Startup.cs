@@ -1,5 +1,7 @@
 using Hubtel.eCommerce.Cart.Api.Shared;
+using Hubtel.eCommerce.Cart.Core;
 using Hubtel.eCommerce.Cart.Core.Entities;
+using Hubtel.eCommerce.Cart.Core.Utilities;
 using Hubtel.eCommerce.Cart.Infrastructure.Data;
 using Hubtel.eCommerce.Cart.Infrastructure.Identity;
 using Microsoft.AspNetCore.Builder;
@@ -7,6 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,9 +32,10 @@ namespace Hubtel.eCommerce.Cart.Api
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var assemblies = AssemblyHelper.GetAssemblies();
+
             services.AddDbContext<AppDbContext>(options =>
             {
                 var connectionString = Configuration.GetConnectionString("DefaultConnection");
@@ -76,17 +80,28 @@ namespace Hubtel.eCommerce.Cart.Api
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddRepositories();
+            services.AddRepositories(assemblies);
 
-            services.AddControllers();
+            services.AddValidators(assemblies);
+
+            services.AddAutoMapper(assemblies);
+
+            services.AddControllers(options =>
+            {
+                // ASP.NET Core 2.2 Parameter Transformers for clean URL generation and slugs in Razor Pages or MVC
+                // source: https://www.hanselman.com/blog/ASPNETCore22ParameterTransformersForCleanURLGenerationAndSlugsInRazorPagesOrMVC.aspx
+                options.Conventions.Add(new RouteTokenTransformerConvention(new SlugifyParameterTransformer()));
+
+            });
 
             services.AddAuthentication()
                     .AddBearer(Configuration.GetSection("Authentication:Bearer"));
 
+            services.AddAuthorization();
+
             services.AddDocumentations();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             // Configure the HTTP request pipeline.
@@ -102,10 +117,16 @@ namespace Hubtel.eCommerce.Cart.Api
 
             app.UseRouting();
 
+            app.UseAuthentication();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+
                 endpoints.MapControllers();
             });
         }
