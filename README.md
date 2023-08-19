@@ -1,15 +1,15 @@
-# Hubtel.eCommerce.Cart.Api
+# Hubtel.eCommerce.Cart.Api :shopping_cart:
 
 This repository contains the startup configuration for the Hubtel eCommerce Cart API. It configures various services, middlewares, and components required for the API to function properly.
 
 ## Table of Contents
 
-- [Introduction](#introduction)
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
+- :memo: [Introduction](#introduction)
+- :computer: [Installation](#installation)
+- :wrench: [Configuration](#configuration)
+- :rocket: [Usage](#usage)
+- :raising_hand: [Contributing](#contributing)
+- :page_with_curl: [License](#license)
 
 ## Introduction
 
@@ -17,10 +17,10 @@ The Hubtel.eCommerce.Cart.Api project is responsible for setting up and configur
 
 ## Installation
 
-1. Clone this repository to your local machine.
-2. Open the project using your preferred development environment (Visual Studio, Visual Studio Code, etc.).
-3. Make sure you have the required dependencies installed, such as .NET Core SDK and other referenced packages.
-4. Configure the connection string in the `appsettings.json` or `appsettings.Development.json` file to point to your desired database.
+1. :octocat: Clone this repository to your local machine.
+2. :wrench: Open the project using your preferred development environment (Visual Studio, Visual Studio Code, etc.).
+3. :package: Make sure you have the required dependencies installed, such as .NET Core SDK and other referenced packages.
+4. :gear: Configure the connection string in the `appsettings.json` or `appsettings.Development.json` file to point to your desired database.
 
 ## Configuration
 
@@ -36,10 +36,10 @@ The configuration of the Hubtel.eCommerce.Cart.Api project involves several step
 
 ## Usage
 
-1. Install the required dependencies and configure the connection string as mentioned in the [Installation](#installation) section.
-2. Run the application using your preferred development environment or command line tool.
-3. During development, the SwaggerUI documentation can be accessed at `/swagger` to explore and test the available API endpoints.
-4. The API exposes various endpoints related to eCommerce cart functionality.
+1. :package: Install the required dependencies and configure the connection string as mentioned in the [Installation](#installation) section.
+2. :rocket: Run the application using your preferred development environment or command line tool.
+3. :book: During development, the SwaggerUI documentation can be accessed at `/swagger` to explore and test the available API endpoints.
+4. :shopping_bags: The API exposes various endpoints related to eCommerce cart functionality.
 
 ## Contributing
 
