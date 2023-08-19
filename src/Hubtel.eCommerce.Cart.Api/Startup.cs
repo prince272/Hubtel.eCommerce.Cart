@@ -26,6 +26,7 @@ using Hubtel.eCommerce.Cart.Api.Controllers;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Logging;
+using Hubtel.eCommerce.Cart.Infrastructure.Caching;
 
 namespace Hubtel.eCommerce.Cart.Api
 {
@@ -41,6 +42,8 @@ namespace Hubtel.eCommerce.Cart.Api
         public void ConfigureServices(IServiceCollection services)
         {
             var assemblies = AssemblyHelper.GetAssemblies();
+
+            services.AddCaching();
 
             services.AddDbContext<AppDbContext>(options =>
             {
