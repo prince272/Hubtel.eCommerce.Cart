@@ -3,6 +3,7 @@ using Hubtel.eCommerce.Cart.Core.Entities;
 using Hubtel.eCommerce.Cart.Core.Extensions.Identity;
 using Hubtel.eCommerce.Cart.Core.Utilities;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -42,18 +43,24 @@ namespace Hubtel.eCommerce.Cart.Infrastructure.Identity
             var separator = UserSessionOptions.ValueSeparator;
 
             options.Secret = !string.IsNullOrEmpty(options.Secret) ? options.Secret : AlgorithmHelper.SecretKey;
-            options.Issuer = string.Join(separator, options.Issuer?.Split(separator).Append(serverUrl).Distinct().SkipWhile(string.IsNullOrEmpty).ToArray() ?? Array.Empty<string>());
-            options.Audience = string.Join(separator, options.Audience?.Split(separator).Append(serverUrl).Distinct().SkipWhile(string.IsNullOrEmpty).ToArray() ?? Array.Empty<string>());
+
+            options.Issuer = string.Join(separator, (options.Issuer ?? string.Empty).Split(separator).Append(serverUrl).Distinct().SkipWhile(string.IsNullOrEmpty).ToArray());
+            options.Audience = string.Join(separator, (options.Issuer ?? string.Empty).Split(separator).Append(serverUrl).Distinct().SkipWhile(string.IsNullOrEmpty).ToArray());
+
+            options.AccessTokenExpiresIn = options.AccessTokenExpiresIn != TimeSpan.Zero ? options.AccessTokenExpiresIn : TimeSpan.FromDays(1);
+            options.RefreshTokenExpiresIn = options.AccessTokenExpiresIn != TimeSpan.Zero ? options.AccessTokenExpiresIn : TimeSpan.FromDays(90);
         }
 
         public static AuthenticationBuilder AddBearer(this AuthenticationBuilder builder)
         {
+            builder.Services.ConfigureOptions<ConfigureJwtBearerOptions>();
+
             builder.Services.AddScoped<IUserClaimsPrincipalFactory<User>, UserClaimsPrincipalFactory>();
             builder.Services.AddScoped<IUserSessionFactory, UserSessionFactory>();
             builder.Services.AddScoped<IUserSessionStore, UserSessionStore>();
             builder.Services.AddScoped<IUserContext, UserSessionContext>();
 
-            builder.Services.ConfigureOptions<ConfigureJwtBearerOptions>();
+
             return builder.AddJwtBearer();
         }
     }

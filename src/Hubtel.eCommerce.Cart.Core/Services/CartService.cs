@@ -44,8 +44,7 @@ namespace Hubtel.eCommerce.Cart.Core.Services
             var formValidationResult = await formValidator.ValidateAsync(form);
             if (!formValidationResult.IsValid) throw new BadRequestException(formValidationResult.ToDictionary());
 
-            const int cartLimit = 11;
-            const int itemMaxQuantity = 10;
+            const int cartLimit = 100;
 
             // Get the authorized user
             var currentUser = await _userRepository.GetUser(_userContext.User) ?? throw new UnauthorizedException();
@@ -64,11 +63,6 @@ namespace Hubtel.eCommerce.Cart.Core.Services
             }
             else
             {
-                if (form.Quantity >= itemMaxQuantity)
-                {
-                    throw new BadRequestException($"Item '{item.Id}' limit has been reached.");
-                }
-
                 if (activeCart == null)
                 {
                     if (carts.Length >= cartLimit)
@@ -79,7 +73,6 @@ namespace Hubtel.eCommerce.Cart.Core.Services
                     activeCart = new Entities.Cart();
                     activeCart.UserId = currentUser.Id;
                     activeCart.ItemId = item.Id;
-                    activeCart.ItemName = item.Name;
                     activeCart.Quantity = form.Quantity;
                     activeCart.CreatedAt = DateTimeOffset.UtcNow;
                     activeCart.UpdatedAt = DateTimeOffset.UtcNow;
@@ -91,7 +84,6 @@ namespace Hubtel.eCommerce.Cart.Core.Services
                 {
                     activeCart.UserId = currentUser.Id;
                     activeCart.ItemId = item.Id;
-                    activeCart.ItemName = item.Name;
                     activeCart.Quantity = form.Quantity;
                     activeCart.UpdatedAt = DateTimeOffset.UtcNow;
                     await _cartRepository.UpdateAsync(activeCart);
@@ -135,6 +127,11 @@ namespace Hubtel.eCommerce.Cart.Core.Services
 
             var predicate = PredicateBuilder.True<Entities.Cart>();
 
+            var currentUser = await _userRepository.GetUser(_userContext.User) ?? throw new UnauthorizedException();
+
+            if (!(await _userRepository.IsInRoleAsync(currentUser, Roles.Admin)))
+                predicate = predicate.And(cart => cart.UserId == currentUser.Id);
+
             if (filter.Ids != null && filter.Ids.Any())
                 predicate = predicate.And(cart => filter.Ids.Contains(cart.Id));
 
@@ -152,12 +149,20 @@ namespace Hubtel.eCommerce.Cart.Core.Services
             if (filter.PhoneNumbers != null && filter.PhoneNumbers.Any())
                 predicate = predicate.And(cart => filter.PhoneNumbers.Contains(cart.User != null ? cart.User.PhoneNumber : null));
 
-            var cartPage = await _cartRepository.FindManyAsync(filter.PageNumber, filter.PageSize, item =>
-            {
-                var itemModel = _mapper.Map(item, new GetCartModel());
-                return itemModel;
-            }, predicate);
+            var select = new Func<Entities.Cart, GetCartModel>(MapGetCartModel);
+
+
+            var cartPage = await _cartRepository.FindManyAsync(filter.PageNumber, filter.PageSize, select, predicate, orderBy: null, cart => cart.Item);
             return cartPage;
+        }
+
+        private GetCartModel MapGetCartModel(Entities.Cart cart)
+        {
+            var cartModel = _mapper.Map(cart, new GetCartModel());
+            cartModel.ItemName = cart.Item.Name;
+            cartModel.UnitPrice = cart.Item.Price;
+            cartModel.TotalPrice = cart.Item.Price * cart.Quantity;
+            return cartModel;
         }
     }
 }

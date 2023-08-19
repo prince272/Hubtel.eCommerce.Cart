@@ -11,6 +11,7 @@ using Humanizer;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -97,7 +98,7 @@ namespace Hubtel.eCommerce.Cart.Core.Services
             await _userRepository.AddSessionAsync(user, session);
 
             var model = _mapper.Map(user, _mapper.Map<UserSessionModel>(session));
-            model.Roles = await _userRepository.GetRolesAsync(user);
+            model.Roles = (await _userRepository.GetRolesAsync(user)).Select(_ => _.Camelize()).ToArray();
             return model;
         }
 
@@ -121,7 +122,7 @@ namespace Hubtel.eCommerce.Cart.Core.Services
             await _userRepository.AddSessionAsync(user, session);
 
             var model = _mapper.Map(user, _mapper.Map<UserSessionModel>(session));
-            model.Roles = await _userRepository.GetRolesAsync(user);
+            model.Roles = (await _userRepository.GetRolesAsync(user)).Select(_ => _.Camelize()).ToArray();
             return model;
         }
 

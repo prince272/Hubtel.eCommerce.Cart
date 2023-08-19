@@ -1,4 +1,5 @@
-﻿using Hubtel.eCommerce.Cart.Core.Models.Items;
+﻿using Hubtel.eCommerce.Cart.Core.Models.Carts;
+using Hubtel.eCommerce.Cart.Core.Models.Items;
 using Hubtel.eCommerce.Cart.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,11 +21,18 @@ namespace Hubtel.eCommerce.Cart.Api.Controllers
             _itemService = itemService ?? throw new ArgumentNullException(nameof(itemService));
         }
 
-
-        [HttpGet("{id}")]
+        [Authorize]
+        [HttpGet("/[controller]/{id}")]
         public async Task<IActionResult> Get([FromRoute] long id)
         {
             return Ok(await _itemService.GetAsync(new GetItemFilter { Id = id }));
+        }
+
+        [Authorize]
+        [HttpGet("/[controller]")]
+        public async Task<IActionResult> GetPage([FromQuery] GetItemPageFilter filter)
+        {
+            return Ok(await _itemService.GetPageAsync(filter));
         }
     }
 }

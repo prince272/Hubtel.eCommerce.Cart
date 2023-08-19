@@ -5,6 +5,7 @@ using Hubtel.eCommerce.Cart.Core.Entities;
 using Hubtel.eCommerce.Cart.Core.Exceptions;
 using Hubtel.eCommerce.Cart.Core.Extensions.Identity;
 using Hubtel.eCommerce.Cart.Core.Models.Accounts;
+using Hubtel.eCommerce.Cart.Core.Models.Carts;
 using Hubtel.eCommerce.Cart.Core.Models.Items;
 using Hubtel.eCommerce.Cart.Core.Repositories;
 using Hubtel.eCommerce.Cart.Core.Shared;
@@ -116,7 +117,7 @@ namespace Hubtel.eCommerce.Cart.Core.Services
             if (item == null) throw new NotFoundException();
 
             // Get the existing item
-            var itemModel = _mapper.Map(await _itemRepository.FindByIdAsync(filter.Id), new GetItemModel());
+            var itemModel = _mapper.Map(item, new GetItemModel());
             return itemModel;
 
         }
@@ -131,10 +132,15 @@ namespace Hubtel.eCommerce.Cart.Core.Services
 
             var itemPage = await _itemRepository.FindManyAsync(filter.PageNumber, filter.PageSize, item =>
             {
-                var itemModel = _mapper.Map(item, new GetItemModel());
-                return itemModel;
+                return MapGetItemModel(item);
             });
             return itemPage;
+        }
+
+        private GetItemModel MapGetItemModel(Item item)
+        {
+            var itemModel = _mapper.Map(item, new GetItemModel());
+            return itemModel;
         }
     }
 }

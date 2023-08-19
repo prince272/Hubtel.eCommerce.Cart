@@ -23,6 +23,9 @@ using System.Text.Json.Serialization;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Hubtel.eCommerce.Cart.Api.Controllers;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Logging;
 
 namespace Hubtel.eCommerce.Cart.Api
 {
@@ -116,10 +119,17 @@ namespace Hubtel.eCommerce.Cart.Api
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
 
                     options.JsonSerializerOptions.IgnoreNullValues = true;
-            });
+                });
 
             services.AddTransient<ProblemDetailsFactory, HttpProblemDetailsFactory>();
-          
+           
+            services.AddAuthentication(options =>
+            {
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+
+            })
                     .AddBearer(Configuration.GetSection("Authentication:Bearer"));
 
             services.AddAuthorization();
@@ -136,7 +146,7 @@ namespace Hubtel.eCommerce.Cart.Api
 
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                // app.UseDeveloperExceptionPage();
 
                 app.UseSwagger();
                 app.UseSwaggerUI();

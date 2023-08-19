@@ -17,8 +17,6 @@ namespace Hubtel.eCommerce.Cart.Core.Entities
 
         public long ItemId { get; set; }
 
-        public string ItemName { get; set; }
-
         public int Quantity { get; set; }
 
         public DateTimeOffset CreatedAt { get; set; }

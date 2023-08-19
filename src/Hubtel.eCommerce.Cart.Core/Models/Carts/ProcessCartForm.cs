@@ -16,7 +16,7 @@ namespace Hubtel.eCommerce.Cart.Core.Models.Carts
         {
             public Validator()
             {
-                RuleFor(m => m.Quantity).ExclusiveBetween(1, int.MaxValue);
+                RuleFor(m => m.Quantity).InclusiveBetween(0, int.MaxValue);
             }
         }
     }
