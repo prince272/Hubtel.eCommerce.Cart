@@ -6,11 +6,11 @@ using System.Text.Json.Serialization;
 
 namespace Hubtel.eCommerce.Cart.Core.Models.Carts
 {
-    public class DeleteCartForm
+    public class RemoveItemFromCartForm
     {
-        public long Id { get; set; }
+        public long ItemId { get; set; }
 
-        public class Validator : AbstractValidator<DeleteCartForm>
+        public class Validator : AbstractValidator<RemoveItemFromCartForm>
         {
             public Validator()
             {

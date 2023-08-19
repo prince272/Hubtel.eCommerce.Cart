@@ -6,13 +6,13 @@ using System.Text;
 
 namespace Hubtel.eCommerce.Cart.Core.Models.Carts
 {
-    public class ProcessCartForm
+    public class AddItemToCartForm
     {
         public long ItemId { get; set; }
 
         public int Quantity { get; set; }
 
-        public class Validator : AbstractValidator<ProcessCartForm>
+        public class Validator : AbstractValidator<AddItemToCartForm>
         {
             public Validator()
             {

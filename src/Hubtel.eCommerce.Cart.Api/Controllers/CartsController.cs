@@ -21,19 +21,18 @@ namespace Hubtel.eCommerce.Cart.Api.Controllers
         }
 
         [Authorize]
-        [HttpPost("/[controller]/[action]")]
-        public async Task<IActionResult> Process([FromBody] ProcessCartForm form)
+        [HttpPost("/[controller]/items")]
+        public async Task<IActionResult> AddItemToCart([FromBody] AddItemToCartForm form)
         {
-            await _cartService.ProcessAsync(form);
+            await _cartService.AddItemAsync(form);
             return Ok();
         }
 
         [Authorize]
-        [HttpDelete("/[controller]/{id}")]
-        public async Task<IActionResult> Delete([FromRoute] long id, [FromBody] DeleteCartForm form)
+        [HttpDelete("/[controller]/items")]
+        public async Task<IActionResult> RemoveItemFromCart([FromBody] RemoveItemFromCartForm form)
         {
-            if (form != null) form.Id = id;
-            await _cartService.DeleteAsync(form);
+            await _cartService.RemoveItemAsync(form);
             return Ok();
         }
 

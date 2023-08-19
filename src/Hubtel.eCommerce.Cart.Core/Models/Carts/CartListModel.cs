@@ -8,6 +8,8 @@ namespace Hubtel.eCommerce.Cart.Core.Models.Carts
     public class CartListModel
     {
         public IEnumerable<CartModel> Items { get; set; }
+
+        public decimal TotalAmount { get; set; }
     }
 
     public class CartPageModel : CartListModel, IPageable<CartModel>

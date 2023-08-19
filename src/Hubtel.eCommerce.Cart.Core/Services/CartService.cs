@@ -37,24 +37,35 @@ namespace Hubtel.eCommerce.Cart.Core.Services
             _userContext = userContext ?? throw new ArgumentNullException(nameof(userContext));
         }
 
-        public async Task ProcessAsync(ProcessCartForm form)
+        public async Task AddItemAsync(AddItemToCartForm form)
         {
             if (form == null) throw new ArgumentNullException(nameof(form));
 
-            var formValidator = _validatorProvider.GetRequiredService<ProcessCartForm.Validator>();
+            var formValidator = _validatorProvider.GetRequiredService<AddItemToCartForm.Validator>();
             var formValidationResult = await formValidator.ValidateAsync(form);
             if (!formValidationResult.IsValid) throw new BadRequestException(formValidationResult.ToDictionary());
+
+            await ProcessAsync(form.ItemId, form.Quantity);
+        }
+
+        public async Task RemoveItemAsync(RemoveItemFromCartForm form)
+        {
+            await ProcessAsync(form.ItemId, 0);
+        }
+
+        public async Task ProcessAsync(long itemId, int quantity)
+        {
 
             const int cartLimit = 100;
 
             // Get the authorized user
             var currentUser = await _userRepository.GetUser(_userContext.User) ?? throw new UnauthorizedException();
-            var item = await _itemRepository.FindByIdAsync(form.ItemId) ?? throw new BadRequestException($"Item '{form.ItemId}' does not exist.");
+            var item = await _itemRepository.FindByIdAsync(itemId) ?? throw new BadRequestException($"Item '{itemId}' does not exist.");
 
             var carts = (await _cartRepository.FindManyAsync(cart => cart.UserId == currentUser.Id)).ToArray();
             var activeCart = carts.FirstOrDefault(cart => cart.ItemId == item.Id);
 
-            if (form.Quantity == 0)
+            if (quantity == 0)
             {
                 if (activeCart != null)
                 {
@@ -74,7 +85,7 @@ namespace Hubtel.eCommerce.Cart.Core.Services
                     activeCart = new Entities.Cart();
                     activeCart.UserId = currentUser.Id;
                     activeCart.ItemId = item.Id;
-                    activeCart.Quantity = form.Quantity;
+                    activeCart.Quantity = quantity;
                     activeCart.CreatedAt = DateTimeOffset.UtcNow;
                     activeCart.UpdatedAt = DateTimeOffset.UtcNow;
                     await _cartRepository.CreateAsync(activeCart);
@@ -85,7 +96,7 @@ namespace Hubtel.eCommerce.Cart.Core.Services
                 {
                     activeCart.UserId = currentUser.Id;
                     activeCart.ItemId = item.Id;
-                    activeCart.Quantity = form.Quantity;
+                    activeCart.Quantity = quantity;
                     activeCart.UpdatedAt = DateTimeOffset.UtcNow;
                     await _cartRepository.UpdateAsync(activeCart);
 
@@ -93,29 +104,6 @@ namespace Hubtel.eCommerce.Cart.Core.Services
                 }
             }
 
-        }
-
-        public async Task DeleteAsync(DeleteCartForm form)
-        {
-            if (form == null) throw new ArgumentNullException(nameof(form));
-
-            var formValidator = _validatorProvider.GetRequiredService<DeleteCartForm.Validator>();
-            var formValidationResult = await formValidator.ValidateAsync(form);
-            if (!formValidationResult.IsValid) throw new BadRequestException(formValidationResult.ToDictionary());
-
-            // Get the authorized user
-            var currentUser = await _userRepository.GetUser(_userContext.User);
-            if (currentUser == null) throw new UnauthorizedException();
-
-            // Check if the authorized user is an admin
-            var isCurrentUserAdmin = await _userRepository.IsInRoleAsync(currentUser, Roles.Admin);
-            if (!isCurrentUserAdmin) throw new ForbiddenException();
-
-            var item = await _itemRepository.FindByIdAsync(form.Id);
-            if (item == null) throw new NotFoundException();
-
-            // Delete the existing item by marking the item as deleted
-            await _itemRepository.DeleteAsync(item);
         }
 
         public async Task<CartListModel> GetActiveListAsync(CartListFilter filter)
@@ -206,6 +194,8 @@ namespace Hubtel.eCommerce.Cart.Core.Services
 
             var cartListModel = Activator.CreateInstance<TListModel>();
             cartListModel.Items = cartModels.ToArray();
+            cartListModel.TotalAmount = carts.Select(cart => (cart.Item.Price * cart.Quantity)).Sum();
+
             return cartListModel;
         }
 
