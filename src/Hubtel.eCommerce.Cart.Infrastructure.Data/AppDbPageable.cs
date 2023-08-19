@@ -14,19 +14,19 @@ namespace Hubtel.eCommerce.Cart.Infrastructure.Data
     {
         public AppDbPageable(int pageNumber, int pageSize, long totalItems, IEnumerable<T> items)
         {
-            Page = pageNumber;
+            PageNumber = pageNumber;
             PageSize = pageSize;
             TotalItems = totalItems;
             Items = items;
         }
 
-        public int Page { get; }
+        public int PageNumber { get; }
         public int PageSize { get; }
         public long TotalItems { get; }
         public int TotalPages => (int)Math.Ceiling((double)TotalItems / PageSize);
         public IEnumerable<T> Items { get; }
-        public bool HasNextPage => Page < TotalPages;
-        public bool HasPrevPage => Page > 1;
+        public bool HasNextPage => PageNumber < TotalPages;
+        public bool HasPrevPage => PageNumber > 1;
     }
 
     public static class PageableExtensions

@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Hubtel.eCommerce.Cart.Core.Models.Carts
 {
-    public class GetCartModel
+    public class CartModel
     {
         public long UserId { get; set; }
 
@@ -20,13 +20,13 @@ namespace Hubtel.eCommerce.Cart.Core.Models.Carts
 
         public decimal UnitPrice { get; set; }
 
-        public decimal TotalPrice { get; set; }
+        public decimal Amount { get; set; }
 
         public class Profile : AbstractProfile
         {
             public Profile()
             {
-                CreateMap<Entities.Cart, GetCartModel>();
+                CreateMap<Entities.Cart, CartModel>();
             }
         }
     }

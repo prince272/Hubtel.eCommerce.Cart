@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -117,11 +118,11 @@ namespace Hubtel.eCommerce.Cart.Core.Services
             await _itemRepository.DeleteAsync(item);
         }
 
-        public async Task<IPageable<GetCartModel>> GetPageAsync(GetCartPageFilter filter)
+        public async Task<CartListModel> GetActiveListAsync(CartListFilter filter)
         {
             if (filter == null) throw new ArgumentNullException(nameof(filter));
 
-            var formValidator = _validatorProvider.GetRequiredService<GetCartPageFilter.Validator>();
+            var formValidator = _validatorProvider.GetRequiredService<CartListFilter.Validator>();
             var formValidationResult = await formValidator.ValidateAsync(filter);
             if (!formValidationResult.IsValid) throw new BadRequestException(formValidationResult.ToDictionary());
 
@@ -131,6 +132,35 @@ namespace Hubtel.eCommerce.Cart.Core.Services
 
             if (!(await _userRepository.IsInRoleAsync(currentUser, Roles.Admin)))
                 predicate = predicate.And(cart => cart.UserId == currentUser.Id);
+
+             predicate = predicate.And(await GetPredicateAsync(filter));
+
+            var carts = await _cartRepository.FindManyAsync(predicate, include: cart => cart.Item);
+            var cartListModel = MapCartListModel<CartListModel>(carts);
+            return cartListModel;
+        }
+
+        public async Task<CartPageModel> GetPageAsync(CartPageFilter filter)
+        {
+            if (filter == null) throw new ArgumentNullException(nameof(filter));
+
+            var formValidator = _validatorProvider.GetRequiredService<CartPageFilter.Validator>();
+            var formValidationResult = await formValidator.ValidateAsync(filter);
+            if (!formValidationResult.IsValid) throw new BadRequestException(formValidationResult.ToDictionary());
+
+            var predicate = PredicateBuilder.True<Entities.Cart>();
+
+            predicate = predicate.And(await GetPredicateAsync(filter));
+
+            
+            var cartPageModel = MapCartPageModel(await _cartRepository.FindManyAsync(filter.PageNumber, filter.PageSize, predicate, orderBy: null, include: cart => cart.Item));
+            return cartPageModel;
+        }
+
+        private Task<Expression<Func<Entities.Cart, bool>>> GetPredicateAsync<TFilter>(TFilter filter)
+            where TFilter : CartListFilter
+        {
+            var predicate = PredicateBuilder.True<Entities.Cart>();
 
             if (filter.Ids != null && filter.Ids.Any())
                 predicate = predicate.And(cart => filter.Ids.Contains(cart.Id));
@@ -146,7 +176,7 @@ namespace Hubtel.eCommerce.Cart.Core.Services
                 // Calculate the time duration before the current UTC time.
                 var before = DateTimeOffset.UtcNow - filter.Time;
 
-                // This condition checks if the 'before' time duration is less than or equal to the 'UpdatedAt' time of a cart.
+                // Checks if the 'before' time duration is less than or equal to the 'UpdatedAt' time of a cart.
                 predicate = predicate.And(cart => before <= cart.UpdatedAt);
             }
 
@@ -156,20 +186,37 @@ namespace Hubtel.eCommerce.Cart.Core.Services
                 predicate = predicate.And(cart => filter.PhoneNumbers.Contains(cart.User != null ? cart.User.PhoneNumber : null));
             }
 
-            var select = new Func<Entities.Cart, GetCartModel>(MapGetCartModel);
-
-
-            var cartPage = await _cartRepository.FindManyAsync(filter.PageNumber, filter.PageSize, select, predicate, orderBy: null, cart => cart.Item);
-            return cartPage;
+            return Task.FromResult(predicate);
         }
 
-        private GetCartModel MapGetCartModel(Entities.Cart cart)
+        private TListModel MapCartListModel<TListModel>(IEnumerable<Entities.Cart> carts)
+            where TListModel : CartListModel
         {
-            var cartModel = _mapper.Map(cart, new GetCartModel());
-            cartModel.ItemName = cart.Item.Name;
-            cartModel.UnitPrice = cart.Item.Price;
-            cartModel.Amount = cart.Item.Price * cart.Quantity;
-            return cartModel;
+
+            var cartModels = new List<CartModel>();
+
+            foreach (var cart in carts)
+            {
+                var cartModel = _mapper.Map(cart, new CartModel());
+                cartModel.ItemName = cart.Item.Name;
+                cartModel.UnitPrice = cart.Item.Price;
+                cartModel.Amount = cart.Item.Price * cart.Quantity;
+                cartModels.Add(cartModel);
+            }
+
+            var cartListModel = Activator.CreateInstance<TListModel>();
+            cartListModel.Items = cartModels.ToArray();
+            return cartListModel;
+        }
+
+        private CartPageModel MapCartPageModel(IPageable<Entities.Cart> cartPage)
+        {
+            var model = MapCartListModel<CartPageModel>(cartPage.Items);
+            model.PageNumber = cartPage.PageNumber;
+            model.PageSize = cartPage.PageSize;
+            model.TotalItems = cartPage.TotalItems;
+            model.TotalPages = cartPage.TotalPages;
+            return model;
         }
     }
 }

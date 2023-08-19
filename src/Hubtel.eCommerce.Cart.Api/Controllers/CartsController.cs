@@ -38,9 +38,15 @@ namespace Hubtel.eCommerce.Cart.Api.Controllers
         }
 
         [HttpGet("/[controller]")]
-        public async Task<IActionResult> GetPage([FromQuery] GetCartPageFilter filter)
+        public async Task<IActionResult> GetPage([FromQuery] CartPageFilter filter)
         {
             return Ok(await _cartService.GetPageAsync(filter));
+        }
+
+        [HttpGet("/[controller]/active")]
+        public async Task<IActionResult> GetActiveList([FromQuery] CartListFilter filter)
+        {
+            return Ok(await _cartService.GetActiveListAsync(filter));
         }
     }
 }

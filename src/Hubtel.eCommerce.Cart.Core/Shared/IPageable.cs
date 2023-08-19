@@ -8,7 +8,7 @@ namespace Hubtel.eCommerce.Cart.Core.Shared
 {
     public interface IPageable<T>
     {
-        int Page { get; }
+        int PageNumber { get; }
         int PageSize { get; }
         long TotalItems { get; }
         int TotalPages { get; }

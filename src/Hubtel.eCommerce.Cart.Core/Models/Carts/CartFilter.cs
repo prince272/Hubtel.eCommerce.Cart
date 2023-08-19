@@ -6,11 +6,11 @@ using System.Text.Json.Serialization;
 
 namespace Hubtel.eCommerce.Cart.Core.Models.Carts
 {
-    public class GetCartFilter
+    public class CartFilter
     {
         public long Id { get; set; }
 
-        public class Validator : AbstractValidator<GetCartFilter>
+        public class Validator : AbstractValidator<CartFilter>
         {
             public Validator()
             {
@@ -18,11 +18,8 @@ namespace Hubtel.eCommerce.Cart.Core.Models.Carts
         }
     }
 
-    public class GetCartPageFilter
+    public class CartListFilter
     {
-        public int PageNumber { get; set; }
-
-        public int PageSize { get; set; }
 
         public long[] Ids { get; set; }
 
@@ -34,7 +31,21 @@ namespace Hubtel.eCommerce.Cart.Core.Models.Carts
 
         public string[] PhoneNumbers { get; set; }
 
-        public class Validator : AbstractValidator<GetCartPageFilter>
+        public class Validator : AbstractValidator<CartListFilter>
+        {
+            public Validator()
+            {
+            }
+        }
+    }
+
+    public class CartPageFilter : CartListFilter
+    {
+        public int PageNumber { get; set; }
+
+        public int PageSize { get; set; }
+
+        public new class Validator : AbstractValidator<CartPageFilter>
         {
             public Validator()
             {
