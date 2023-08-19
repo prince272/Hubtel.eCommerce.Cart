@@ -141,13 +141,20 @@ namespace Hubtel.eCommerce.Cart.Core.Services
             if (filter.Quantity != null)
                 predicate = predicate.And(cart => filter.Quantity == cart.Quantity);
 
-            var current = DateTimeOffset.UtcNow;
-
             if (filter.Time != null)
-                predicate = predicate.And(cart => (current - cart.UpdatedAt) < filter.Time);
+            {
+                // Calculate the time duration before the current UTC time.
+                var before = DateTimeOffset.UtcNow - filter.Time;
+
+                // This condition checks if the 'before' time duration is less than or equal to the 'UpdatedAt' time of a cart.
+                predicate = predicate.And(cart => before <= cart.UpdatedAt);
+            }
+
 
             if (filter.PhoneNumbers != null && filter.PhoneNumbers.Any())
+            {
                 predicate = predicate.And(cart => filter.PhoneNumbers.Contains(cart.User != null ? cart.User.PhoneNumber : null));
+            }
 
             var select = new Func<Entities.Cart, GetCartModel>(MapGetCartModel);
 
@@ -161,7 +168,7 @@ namespace Hubtel.eCommerce.Cart.Core.Services
             var cartModel = _mapper.Map(cart, new GetCartModel());
             cartModel.ItemName = cart.Item.Name;
             cartModel.UnitPrice = cart.Item.Price;
-            cartModel.TotalPrice = cart.Item.Price * cart.Quantity;
+            cartModel.Amount = cart.Item.Price * cart.Quantity;
             return cartModel;
         }
     }
